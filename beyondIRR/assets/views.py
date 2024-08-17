@@ -13,7 +13,6 @@ class SignUp(APIView):
     permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data = request.data)
-        print('4')
         if serializer.is_valid():
             try:
                 serializer.save()
@@ -29,4 +28,4 @@ class Login(TokenObtainPairView):
 class AllUsers(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]  
+    permission_classes = [AllowAny]  
