@@ -28,7 +28,7 @@ def log_request(record_success):
 
             log.save()
 
-
+            
             return JsonResponse(response)
 
         return wrapper

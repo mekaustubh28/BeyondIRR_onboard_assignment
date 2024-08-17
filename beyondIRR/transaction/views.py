@@ -137,8 +137,6 @@ class Summary(generics.ListAPIView):
                 summary[financial_year]["Debt"] += t.amount
             elif asset == "Alternate":
                 summary[financial_year]["Alternate"] += t.amount
-            else:
-                print(f"Unexpected asset class: {asset}")
 
         summary = dict(sorted(summary.items(), reverse=True))
 
