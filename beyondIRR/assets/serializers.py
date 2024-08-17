@@ -8,12 +8,12 @@ from drf_yasg import openapi
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    email = serializers.EmailField(
-        validators=[UniqueValidator(queryset=User.objects.all())]
-    )
-    arn_number = serializers.CharField(
-        validators=[UniqueValidator(queryset=User.objects.all())]
-    )
+    # email = serializers.EmailField(
+    #     validators=[UniqueValidator(queryset=User.objects.all())]
+    # )
+    # arn_number = serializers.CharField(
+    #     validators=[UniqueValidator(queryset=User.objects.all())]
+    # )
 
     class Meta:
         model = User

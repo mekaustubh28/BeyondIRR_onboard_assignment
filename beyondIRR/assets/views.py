@@ -43,12 +43,38 @@ class SignUp(APIView):
         {
             "email": "user@example.com",
             "password": "password123",
-            "arn_number": "ARN12345",
+            "arn_number": 12345,
             "first_name": "User",
             "last_name": "doe"
         }
         ```
         """,
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description='User email'),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, description='User password'),
+                'arn_number': openapi.Schema(type=openapi.TYPE_INTEGER, description='ARN number'),
+                'first_name': openapi.Schema(type=openapi.TYPE_STRING, description='First Name'),
+                'last_name': openapi.Schema(type=openapi.TYPE_STRING, description='Last Name'),
+            },
+            required=['email', 'password', 'arn_number', 'first_name']
+        ),
+        responses={
+            201: openapi.Response('User created successfully', openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'message': openapi.Schema(type=openapi.TYPE_STRING, description='Success message'),
+                    'data': openapi.Schema(type=openapi.TYPE_OBJECT, description='User data')
+                }
+            )),
+            400: openapi.Response('Bad request', openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING, description='Error message')
+                }
+            )),
+        }
 
     )
     @log_request(record_success=True)
@@ -58,12 +84,11 @@ class SignUp(APIView):
         This is a detailed description of what this API endpoint does.
         """
         serializer = UserSerializer(data=request.data)
+   
         res = check_arn(request.data['arn_number'])
-        
         
         if serializer.is_valid():
             try:
-
                 if 'amfi_arn_number' in res:
                     if not res['amfi_email'] == request.data['email']:
                         del request.data['password']
