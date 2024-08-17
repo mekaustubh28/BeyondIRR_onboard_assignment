@@ -79,7 +79,7 @@ class TransactionView(generics.ListAPIView):
         serializer = self.get_serializer(transactions, many=True)
 
         return Response({"success": serializer.data}, status=status.HTTP_200_OK)
-        
+   
 
 class AddTransactionView(APIView):
     permission_classes = [IsAuthenticated]  
@@ -168,7 +168,7 @@ class AddTransactionView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class Summary(generics.ListAPIView):
+class Summary(APIView):
     permission_classes = [IsAuthenticated]  
     @swagger_auto_schema(
         operation_summary="Get Transaction Summary",
