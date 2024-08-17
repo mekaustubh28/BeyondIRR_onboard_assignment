@@ -3,6 +3,8 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth import authenticate
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -28,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginJWTSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
-
+    
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')

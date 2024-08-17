@@ -12,8 +12,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from io import BytesIO
 import datetime
-
-# Create your views here.
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 def get_current_user(auth_header):
     decoded_token = decode_jwt(auth_header)
@@ -24,7 +24,47 @@ def get_current_user(auth_header):
 
 class TransactionView(generics.ListAPIView):
     serializer_class = TransactionSerializer
+    @swagger_auto_schema(
+        operation_summary="Retrieve User Transactions",
+        operation_description="""
+        This endpoint retrieves a list of transactions for the authenticated user.
+        
+        **Note:**
+        Each product can only have one transaction per day for the authenticated user.
+        
+        **Authentication:**
+        This endpoint requires JWT authentication. Include your token in the `Authorization` header as follows:
 
+        ```
+        Authorization: Bearer <your_token_here>
+        ```
+
+        **Response:**
+        - **200 OK**: Returns a list of transactions for the user.
+
+        **Example Response:**
+        ```json
+        [
+            {
+                "id": 1,
+                "product": "Product A",
+                "asset_class": "Equity",
+                "date_of_transaction": "2024-08-18T12:00:00Z",
+                "units": 10,
+                "amount": 1000
+            },
+            {
+                "id": 2,
+                "product": "Product B",
+                "asset_class": "Debt",
+                "date_of_transaction": "2024-08-18T12:30:00Z",
+                "units": 5,
+                "amount": 500
+            }
+        ]
+        ```
+        """,
+    )
     def get(self, request, *args, **kwargs):
         auth_header = request.headers.get('Authorization')
         if not auth_header or not auth_header.startswith('Bearer '):
@@ -41,9 +81,47 @@ class TransactionView(generics.ListAPIView):
         return Response({"success": serializer.data}, status=status.HTTP_200_OK)
         
 
-
 class AddTransactionView(APIView):
     permission_classes = [IsAuthenticated]  
+    @swagger_auto_schema(
+        operation_summary="Add or Update Transactions",
+        operation_description="""
+        This endpoint allows authenticated users to add or update if already present, transactions by uploading an Excel file.
+
+        **Note:**
+        To Test This Endpoint in Postman follow the steps:
+            1. Enter the URL of the API endpoint you want to test in the request URL field.
+            2. Make a POST request.
+            3. Click on the Body tab below the URL field, choose the form-data option.
+            4. Enter 'file' in the key field. 
+            5. In the dropdown next to the key field (usually labeled Text), select File. This changes the input type to allow file selection.
+            6. Click on the Choose Files button that appears next to the key field.
+            7. Navigate to the file you want to upload and select it.
+            8. Click on the Send button to submit the request.
+            OR
+            Directly paste below in the terminal.
+        ```bash
+        curl --location 'http://127.0.0.1:8000/transactions/upload/' \
+        --header 'Authorization: Bearer <your_token_here>' \
+        --header 'f;' \
+        --form 'file=@"path/to/excel.xlsx"'
+        ```
+        
+        **Authentication:**
+        This endpoint requires JWT authentication. Include your token in the `Authorization` header as follows:
+
+        ```
+        Authorization: Bearer <your_token_here>
+        ```
+
+        **Request Body:**
+        - **file**: An Excel file containing transaction data. The file must include the following headers: 'Product', 'Asset Class', 'Date', 'Amount', 'Units'.
+
+        **Response:**
+        - **200 OK**: Success message when data is successfully processed.
+        - **400 Bad Request**: Error messages for invalid file or data issues.
+        """,
+    )
     def post(self, request, *args, **kwargs):
         auth_header = request.headers.get('Authorization')
         if not auth_header or not auth_header.startswith('Bearer '):
@@ -92,6 +170,39 @@ class AddTransactionView(APIView):
 
 class Summary(generics.ListAPIView):
     permission_classes = [IsAuthenticated]  
+    @swagger_auto_schema(
+        operation_summary="Get Transaction Summary",
+        operation_description="""
+        This endpoint provides a summary of transactions grouped by financial year for the authenticated user.
+
+        **Authentication:**
+        This endpoint requires JWT authentication. Include your token in the `Authorization` header as follows:
+
+        ```
+        Authorization: Bearer <your_token_here>
+        ```
+
+        **Response:**
+        - **200 OK**: Returns a summary of transactions by financial year.
+
+        **Example Response:**
+        ```json
+        {
+            "FY24-25": {
+                "Equity": 1000,
+                "Debt": 2000,
+                "Alternate": 3000
+            },
+            "FY23-24": {
+                "Equity": 1000,
+                "Debt": 2000,
+                "Alternate": 0
+            },
+            ...
+        }
+        ```
+        """,
+    )
     def get(self, request, *args, **kwargs):
         auth_header = request.headers.get('Authorization')
         if not auth_header or not auth_header.startswith('Bearer '):
