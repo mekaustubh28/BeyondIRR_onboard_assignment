@@ -45,7 +45,7 @@ class LogRequests(models.Model):
     response_payload = models.JSONField(null=True, blank=True, editable=False)
     status_code = models.IntegerField(editable=False)
     timestamp = models.DateTimeField(auto_now_add=True, editable=False)
-    success = models.BooleanField(default=False, editable=False)
+    success = models.BooleanField(editable=False, null=True)
 
     def __str__(self):
         return f"{self.timestamp} - {self.status_code}"

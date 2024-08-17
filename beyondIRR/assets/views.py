@@ -12,7 +12,7 @@ from .decorator import log_request
 class SignUp(APIView):
     permission_classes = [AllowAny]
 
-    @log_request
+    @log_request(record_success=False)
     def post(self, request, *args, **kwargs):
         
         serializer = UserSerializer(data=request.data)
