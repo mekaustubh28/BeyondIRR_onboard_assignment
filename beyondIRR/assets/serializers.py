@@ -22,7 +22,6 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('First Name Not Given.')
         
         user = User.objects.create_user(**validated_data)
-        print(type(user))
         return user
 
 
@@ -52,9 +51,3 @@ class LogRequestsSerializer(serializers.ModelSerializer):
     class Meta:
         model = LogRequests
         fields = ['id', 'url', 'method', 'request_payload', 'response_payload', 'status_code', 'timestamp', 'success']
-
-    # def create(self, validated_data):
-        
-    #     user = LogRequests.objects.create_user(**validated_data)
-    #     print(type(user))
-    #     return user

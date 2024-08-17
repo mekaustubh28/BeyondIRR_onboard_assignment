@@ -19,12 +19,11 @@ def log_request(func):
             url = str(request.build_absolute_uri()),
             method="POST",
             request_payload=response['data'],
-            response_payload=response['error'],
+            response_payload=response['error'] if 'error' in response else response['message'],
             status_code=int(response['status']),
             success=(response['status'] < 400)
         )
 
-        print(log)
         log.save()
 
 

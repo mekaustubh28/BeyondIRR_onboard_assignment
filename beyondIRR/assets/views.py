@@ -14,16 +14,21 @@ class SignUp(APIView):
 
     @log_request
     def post(self, request, *args, **kwargs):
+        
         serializer = UserSerializer(data=request.data)
+        
+        
         if serializer.is_valid():
             try:
                 serializer.save()
-                return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+                del request.data['password']
+                return Response({"message": "User created successfully", "data": request.data, "status": status.HTTP_201_CREATED}, status=status.HTTP_201_CREATED)
             except ValidationError as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+                
+                del request.data['password']
+                return Response({"error": str(e), "data": request.data, "status": status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
             
         del request.data['password']
-
         return Response({"error": serializer.errors, "data": request.data, "status": status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
 
 class Login(TokenObtainPairView):
