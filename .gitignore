@@ -3,3 +3,4 @@ __pycache__
 db.sqlite3
 private_key.pem
 public_key.pem
+template.xlsx
