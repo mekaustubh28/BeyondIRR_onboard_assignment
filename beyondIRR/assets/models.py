@@ -35,3 +35,17 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+
+class LogRequests(models.Model):    
+    id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
+    url = models.CharField(editable=False, max_length=1000)
+    method = models.CharField(max_length=10, editable=False)
+    request_payload = models.JSONField(editable=False)
+    response_payload = models.JSONField(null=True, blank=True, editable=False)
+    status_code = models.IntegerField(editable=False)
+    timestamp = models.DateTimeField(auto_now_add=True, editable=False)
+    success = models.BooleanField(default=False, editable=False)
+
+    def __str__(self):
+        return f"{self.timestamp} - {self.status_code}"

@@ -1,4 +1,4 @@
-from .models import User
+from .models import User, LogRequests
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.validators import UniqueValidator
@@ -20,7 +20,9 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if not 'first_name' in validated_data:
             raise serializers.ValidationError('First Name Not Given.')
+        
         user = User.objects.create_user(**validated_data)
+        print(type(user))
         return user
 
 
@@ -45,3 +47,14 @@ class LoginJWTSerializer(serializers.Serializer):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
+    
+class LogRequestsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LogRequests
+        fields = ['id', 'url', 'method', 'request_payload', 'response_payload', 'status_code', 'timestamp', 'success']
+
+    # def create(self, validated_data):
+        
+    #     user = LogRequests.objects.create_user(**validated_data)
+    #     print(type(user))
+    #     return user
