@@ -6,6 +6,7 @@ Built over Django Rest Framework, web application designed to manage user transa
 ## Installation
 
 ### Method 1: (setup entire project)
+You will see Dockerfile inside the code. Please run code using this method as there is some issue setting project with database and docker container. Please use Method 1 only.
 1. clone repository
 ```bash
 git clone https://github.com/mekaustubh28/BeyondIRR_onboard_assignment
