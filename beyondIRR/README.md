@@ -47,8 +47,8 @@ python manage.py runserver
 
 Your application will be available at http://localhost:8000/.
 
-### Method 2: (build docker image)
-**NOTE**: No process is running at port `8000`.
+### Method 2: (build docker image) (Please dont use this method prefer method 1.)
+**NOTE**: No process is running at port `8000` Dont use docker to build image for this project. image will be build works completely fine but can create superuser. still figuring out the issue. So use method 1 for all the functions like logs, allusers etc.
 1. make sure you are at level of `Dockerfile`.
 2. build your image.
     1. this will step a working directory `/app`.
