@@ -12,7 +12,7 @@ def log_request(record_success):
         @wraps(func)
         def wrapper(self, request, *args, **kwargs):
             response = func(self, request, *args, **kwargs)
-
+            status_code = response.status_code
             if response:
                 response = response.data
 
@@ -21,14 +21,11 @@ def log_request(record_success):
                 method="POST",
                 request_payload=response['data'],
                 response_payload=response['error'] if 'error' in response else response['message'],
-                status_code=int(response['status']),
+                status_code=int(status_code),
             )
             if(record_success):
-                log.success = (response['status'] < 400)
-
+                log.success = (status_code < 400)
             log.save()
-
-            
             return JsonResponse(response)
 
         return wrapper

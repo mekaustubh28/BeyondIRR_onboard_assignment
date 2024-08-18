@@ -92,22 +92,23 @@ class SignUp(APIView):
                 if 'amfi_arn_number' in res:
                     if not res['amfi_email'] == request.data['email']:
                         del request.data['password']
-                        return Response({"error": "Given Email dont match AMFI Database. Please verify at https://www.amfiindia.com/locate-your-nearest-mutual-fund-distributor-details.", "data": request.data, "status": status.HTTP_404_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
+                        response = Response({"error": "Given Email dont match AMFI Database. Please verify at https://www.amfiindia.com/locate-your-nearest-mutual-fund-distributor-details.", "data": request.data, "status":status.HTTP_404_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
+                        return response
                 else:
                     del request.data['password']
-                    return Response({"error": res, "data": request.data, "status": status.HTTP_404_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
+                    return Response({"error": res, "data": request.data, "status":status.HTTP_404_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
                 serializer.save()
                 
                 del request.data['password']
-                return Response({"message": "User created successfully", "data": request.data, "status": status.HTTP_201_CREATED}, status=status.HTTP_201_CREATED)
+                return Response({"message": "User created successfully", "data": request.data, "status":status.HTTP_201_CREATED}, status=status.HTTP_201_CREATED)
             except ValidationError as e:
                 
                 del request.data['password']
-                return Response({"error": str(e), "data": request.data, "status": status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": str(e), "data": request.data, "status":status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
             
         del request.data['password']
-        return Response({"error": serializer.errors, "data": request.data, "status": status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": serializer.errors, "data": request.data, "status":status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Login(TokenObtainPairView):
