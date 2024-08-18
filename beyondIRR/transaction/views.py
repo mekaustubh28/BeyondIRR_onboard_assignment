@@ -15,6 +15,7 @@ import datetime
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+# helps to get the current user based on Auth token provided.
 def get_current_user(auth_header):
     decoded_token = decode_jwt(auth_header)
     user_id = decoded_token.get('user_id')
@@ -148,7 +149,7 @@ class AddTransactionView(APIView):
             records = df.to_dict(orient='records')
             for record in records:
                 earlier_transaction = Transaction.objects.filter(user=user, product=record['Product'], date_of_transaction=record['Date'])
-                if not earlier_transaction:
+                if not earlier_transaction: # if record is not present create one
                     Transaction.objects.create(
                         user=user,
                         product=record['Product'], 
@@ -157,7 +158,7 @@ class AddTransactionView(APIView):
                         units=record['Units'],
                         amount=record['Amount']             
                     )
-                else:
+                else: # if record is present update it.
                     earlier_transaction = earlier_transaction[0]
                     earlier_transaction.asset_class = record['Asset Class']
                     earlier_transaction.units = record['Units']
@@ -216,7 +217,7 @@ class Summary(APIView):
         transactions = Transaction.objects.filter(user=user)
         
         summary = {}
-
+        # logic to create summary sheet
         for t in transactions:
             time = t.date_of_transaction
             timestamp_curr = time.timestamp()
@@ -226,7 +227,7 @@ class Summary(APIView):
             check_2 = f"{year+1}-04-01T00:00:00+05:30"
             timestamp_1 = datetime.datetime.fromisoformat(check_1).timestamp()
             timestamp_2 = datetime.datetime.fromisoformat(check_2).timestamp()
-            
+            #  if date is inside current financial year or previous financial year.
             if timestamp_curr >= timestamp_1 and timestamp_curr < timestamp_2:
                 financial_year = f"FY{str(year)[-2:]}-{str(year+1)[-2:]}"
             elif timestamp_curr < timestamp_1:
@@ -249,6 +250,7 @@ class Summary(APIView):
             elif asset == "Alternate":
                 summary[financial_year]["Alternate"] += t.amount
 
+        # order was random so sorted in descending order of financial years
         summary = dict(sorted(summary.items(), reverse=True))
 
         

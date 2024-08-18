@@ -16,6 +16,7 @@ def log_request(record_success):
             if response:
                 response = response.data
 
+            # storing all logs
             log = LogRequests(
                 url = str(request.build_absolute_uri()),
                 method="POST",
@@ -23,6 +24,7 @@ def log_request(record_success):
                 response_payload=response['error'] if 'error' in response else response['message'],
                 status_code=int(status_code),
             )
+            # check if process was success or not.
             if(record_success):
                 log.success = (status_code < 400)
             log.save()

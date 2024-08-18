@@ -3,8 +3,9 @@ from bs4 import BeautifulSoup
 
 url = 'https://www.amfiindia.com/modules/NearestFinancialAdvisorsDetails'
 
-# Function to check ARN number
+# Function to check ARN number sraping data from AMFI website
 def check_arn(arn_number: int):
+    # minimum length of each ARN_number is 4 eg arn_number = 69 convert it to 0069 to process in scrapper.
     arn_number = str(arn_number)
     if len(arn_number) == 0:
         arn_number = "0000"
@@ -15,6 +16,7 @@ def check_arn(arn_number: int):
     elif len(arn_number) == 3:
         arn_number = "0"+arn_number
         
+    # required payload for scrapping. 
     payload = {
         "nfaARN": arn_number,
         "nfaType": "All"

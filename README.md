@@ -57,6 +57,10 @@ Extensive Documentation of all the Endpoints is given at swagger-ui for the proj
 3. use JWT Bearer Token to use other necessary endpoints.
 
 ## Testing
+Before Testing make sure to place file `template.xlsx` and `missing_values.xlsx` excel file at same level of 
+`manage.py`.\
+[Download](https://github.com/BeyondIRR/sample-assignment/blob/main/template.xlsx) `template.xlsx`.\
+Copy Paste `template.xlsx` and remove some of the entries from it to create `missing_values.xlsx`.\
 Run Tests using 
 ```bash
 python manage.py test
