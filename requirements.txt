@@ -3,6 +3,7 @@ beautifulsoup4==4.12.3
 certifi==2024.7.4
 cffi==1.17.0
 charset-normalizer==3.3.2
+coverage==7.6.1
 cryptography==43.0.0
 Django==5.1
 djangorestframework==3.15.2
@@ -11,12 +12,17 @@ drf-yasg==1.21.7
 et-xmlfile==1.1.0
 idna==3.7
 inflection==0.5.1
+iniconfig==2.0.0
 numpy==2.0.1
 openpyxl==3.1.5
 packaging==24.1
 pandas==2.2.2
+pluggy==1.5.0
 pycparser==2.22
 PyJWT==2.9.0
+pytest==8.3.2
+pytest-cov==5.0.0
+pytest-django==4.8.0
 python-dateutil==2.9.0.post0
 pytz==2024.1
 PyYAML==6.0.2

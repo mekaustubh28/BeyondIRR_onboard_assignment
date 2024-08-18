@@ -61,3 +61,29 @@ Run Tests using
 ```bash
 python manage.py test
 ```
+If you want to have high code coverage to ensure that most of your code is tested. Use tools like `pytest-cov` or `coverage.py` to measure and report code coverage.
+
+Make sure to have require dependencies `pytest-django`, `pytest-cov`, `pytest`
+```bash
+pip install pytest pytest-django pytest-cov
+```
+Run High Converage Testing
+```bash
+DJANGO_SETTINGS_MODULE=beyondIRR.settings pytest assets/tests.py --cov=assets --cov-report=html --cov-report=term-missing
+```
+```bash
+DJANGO_SETTINGS_MODULE=beyondIRR.settings pytest transaction/tests.py --cov=transaction --cov-report=html --cov-report=term-missing
+```
+
+
+## References
+Here are most of the Links I referred to for my guidance.
+1. https://chatgpt.com/share/00116e0a-eaa9-4b45-8887-8562df01e08a (How to configure Swagger with DRF)
+2. https://www.amfiindia.com/locate-your-nearest-mutual-fund-distributor-details (arn_number validation)
+3. https://www.django-rest-framework.org/ (How to configure DRF)
+4. https://docs.djangoproject.com/en/5.0/topics/testing/tools/ (How to write unit tests in django)
+5. https://www.django-rest-framework.org/#example (Create a serializer for model)
+6. https://pytest-cov.readthedocs.io/en/latest/config.html (High End Test converage reference).
+
+
+# Thank you for reading so far.

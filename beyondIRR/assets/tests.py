@@ -3,6 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from .arn_verification import check_arn
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserTestCase(APITestCase):
     def setUp(self):
@@ -93,3 +94,77 @@ class LoginTests(APITestCase):
         response2 = self.client.post(self.login, self.credentials2, format='json')
         self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertNotIn('access', response2.json())
+
+class AllUsersTests(APITestCase):
+    def setUp(self):
+        self.url = reverse('users')
+
+        self.user = User.objects.create(email="user@example.com", password="Test@123", arn_number=54321, first_name="Test")
+        self.admin = User.objects.create(email="admin@example.com", password="Test@123", arn_number=12345, first_name="Test", is_superuser=True, is_staff=True)
+        
+        self.admin_token = self.get_jwt_token(self.admin)
+        self.user_token = self.get_jwt_token(self.user) 
+          
+    def get_jwt_token(self, user):
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
+    
+
+    def test_get_all_users(self):
+        # print(self.admin_token)
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.admin_token)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(type(response.json()), list)
+
+    def test_unauthorized_access(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.user_token)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        
+class CurrentUserTests(APITestCase):
+    def setUp(self):
+        self.url = reverse('curr-list')
+        self.user = User.objects.create(email="user@example.com", password="Test@123", arn_number=54321, first_name="Test")
+        self.user_token = self.get_jwt_token(self.user) 
+          
+    def get_jwt_token(self, user):
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
+
+    def test_current_user(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.user_token)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('user_email', response.json())
+
+    def test_unauthorized_access(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertNotIn('user_email', response.json())
+
+
+class LogViewTests(APITestCase):
+    def setUp(self):
+        self.url = reverse('log-list')
+
+        self.user = User.objects.create(email="user@example.com", password="Test@123", arn_number=54321, first_name="Test")
+        self.admin = User.objects.create(email="admin@example.com", password="Test@123", arn_number=12345, first_name="Test", is_superuser=True, is_staff=True)
+        
+        self.admin_token = self.get_jwt_token(self.admin)
+        self.user_token = self.get_jwt_token(self.user) 
+          
+    def get_jwt_token(self, user):
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
+    
+    def test_get_logs(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.admin_token)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(type(response.json()), list)
+
+    def test_unauthorized_access(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.user_token)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
