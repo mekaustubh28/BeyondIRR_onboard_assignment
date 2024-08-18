@@ -4,7 +4,7 @@
 Built over Django Rest Framework, web application designed to manage user transactions and provide financial summaries. The application supports JWT authentication for secure access to various API endpoints.
 
 ## Installation
-
+Please follow any of the 2 methods either setup entire project or built docker image.
 ### Method 1: (setup entire project)
 1. clone repository
 ```bash
@@ -46,6 +46,39 @@ python manage.py runserver
 ```
 
 Your application will be available at http://localhost:8000/.
+
+### Method 2: (build docker image)
+**NOTE**: No process is running at port `8000`.
+1. make sure you are at level of `Dockerfile`.
+2. build your image.
+    1. this will step a working directory `/app`.
+    2. generate a public and private key file.
+    3. install all the dependencies.
+    4. make all the migrations and migrate.
+    5. Expose the app to port `8000`.
+```bash
+docker build -t beyondirr .
+```
+3. Make the migrations.
+    1. you will be inside /app of the image.(ls to see all the files.)
+```bash
+docker run -it beyondirr /bin/bash
+python manage.py makemigrations && python manage.py migrate
+```
+4. create superuser.
+```bash
+python manage.py createsuperuser
+```
+5. While running `python manage.py createsuperuser` you will be promoted for Email, First Name, ARN_number(it will not be verified enter any), Password.
+6. After creating superuser close the container bash with `Ctrl+D`.
+7. Run the container.
+```bash
+docker run -p 8000:8000 beyondirr
+```
+Your application will be available at http://localhost:8000/. If everything goes well.
+If it fail try stopping any container running at 8000.
+
+
 
 ## Endpoints
 To Try Endpoints head to http://localhost:8000/swagger/
