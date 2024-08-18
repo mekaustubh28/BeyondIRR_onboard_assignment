@@ -3,6 +3,7 @@
 ## Summary
 Built over Django Rest Framework, web application designed to manage user transactions and provide financial summaries. The application supports JWT authentication for secure access to various API endpoints.
 
+**Note:** dont use docker method for building the project prefer local method as there is some issue with docker not creating superuser in the project.
 ## Installation
 
 ### Method 1: (setup entire project)
